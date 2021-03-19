@@ -9,4 +9,6 @@ db.mongoose.set('useCreateIndex', true);
 db.mongoose.set('useFindAndModify', false);
 db.url = dbConfig.url;
 
+db.game = require('./game.model.js')(mongoose);
+
 module.exports = db;
