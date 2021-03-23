@@ -66,6 +66,7 @@ exports.joinGame = (req, res) => {
             res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
         })
         .catch(err => {
+            console.log(err);
             res.status(500).send({
                 message: err.message || "An error occurred while joining game"
             });
