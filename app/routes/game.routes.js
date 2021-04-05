@@ -15,6 +15,9 @@ module.exports = app => {
     // Set user to ready for the game
     router.post("/ready", game.add_to_ready);
 
+    // Set game to started
+    router.post("/start", game.start_game);
+
 
     app.use('/api/game', router);
 };
