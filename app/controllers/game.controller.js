@@ -61,7 +61,7 @@ exports.joinGame = (req, res) => {
         return;
     }
 
-    Game.findOneAndUpdate({joinCode: req.body.joinCode, deviceIds: { "$nin": [req.body.newDeviceId] }}, {$addToSet: {deviceIds: req.body.newDeviceId}})
+    Game.findOneAndUpdate({started: false, joinCode: req.body.joinCode, deviceIds: { "$nin": [req.body.newDeviceId] }}, {$addToSet: {deviceIds: req.body.newDeviceId}})
         .then(data => {
             res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
         })
