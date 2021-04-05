@@ -108,12 +108,12 @@ exports.add_to_ready = (req, res) => {
 };
 
 exports.start_game = (req, res) => {
-    if(!req.body.joinCode) {
+    if(!req.body.joinCode || !req.body.hostDeviceId) {
         res.status(400).send({message: "Content cannot be empty"});
         return;
     }
 
-    Game.findOneAndUpdate({joinCode: req.body.joinCode}, {started: true})
+    Game.findOneAndUpdate({joinCode: req.body.joinCode}, {started: true, $addToSet: {readyPlayers: req.body.hostDeviceId}})
         .then(data => {
             res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
         })
