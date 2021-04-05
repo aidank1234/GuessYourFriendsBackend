@@ -72,3 +72,20 @@ exports.joinGame = (req, res) => {
             });
         });
 };
+
+exports.getGameForJoinCode = (req, res) => {
+  if(!req.body.joinCode) {
+      res.status(400).send({message: "Content cannot be empty"});
+      return;
+  }
+
+  Game.findOne({joinCode: req.body.joinCode})
+      .then(data => {
+          res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
+      })
+      .catch(err => {
+          res.status(500).send({
+              message: err.message || "An error occurred while getting the game"
+          });
+      });
+};

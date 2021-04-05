@@ -9,6 +9,9 @@ module.exports = app => {
     // Join game with join code and device ID
     router.post("/join", game.joinGame);
 
+    // Get game with join code
+    router.post("/get", game.getGameForJoinCode);
+
 
     app.use('/api/game', router);
 };
