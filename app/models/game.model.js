@@ -4,7 +4,7 @@ module.exports = mongoose => {
     const gameSchema = mongoose.Schema(
         {
             joinCode: {type: String, unique: true, required: true},
-            deviceIds: {type: Array, unique: false, required: true}
+            deviceIds: {type: Set, unique: false, required: true}
         },
         {timestamps: true}
     );
