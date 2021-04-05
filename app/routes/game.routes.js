@@ -12,6 +12,9 @@ module.exports = app => {
     // Get game with join code
     router.post("/get", game.getGameForJoinCode);
 
+    // Set user to ready for the game
+    router.post("/ready", game.add_to_ready);
+
 
     app.use('/api/game', router);
 };

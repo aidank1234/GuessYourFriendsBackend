@@ -89,3 +89,20 @@ exports.getGameForJoinCode = (req, res) => {
           });
       });
 };
+
+exports.add_to_ready = (req, res) => {
+    if(!req.body.joinCode || !req.body.deviceId) {
+        res.status(400).send({message: "Content cannot be empty"});
+        return;
+    }
+
+    Game.findOneAndUpdate({joinCode: req.body.joinCode, readyPlayers: { "$nin": [req.body.deviceId] }}, {$addToSet: {readyPlayers: req.body.deviceId}})
+        .then(data => {
+            res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "An error occurred while setting player to ready"
+            });
+        });
+};
