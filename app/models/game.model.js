@@ -7,7 +7,9 @@ module.exports = mongoose => {
             deviceIds: {type: Array, unique: false, required: true},
             started: {type: Boolean, unique: false, required: false, default: false},
             readyPlayers: {type: Array, unique: false, required: false, default: []},
-            gameStartTime: {type: Date, unique: false, required: false, default: null}
+            gameStartTime: {type: Date, unique: false, required: false, default: null},
+            questionSet: {type: String, unique: false, required: true},
+            questions: {type: Array, unique: false, required: true}
         },
         {timestamps: true}
     );

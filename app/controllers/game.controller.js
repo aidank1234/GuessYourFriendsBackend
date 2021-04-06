@@ -1,6 +1,7 @@
 const db = require("../models");
 const Game = db.game;
 const jwt = require('jsonwebtoken');
+const questionsController = require('./question.controller');
 
 function makeJoinCode(length) {
     let result = '';
@@ -19,6 +20,10 @@ exports.create = (req, res) => {
         res.status(400).send({message: "Content cannot be empty"});
         return;
     }
+    if (!req.body.questionSet) {
+        res.status(400).send({message: "Content cannot be empty"});
+        return;
+    }
 
     let joinCode = "";
     const tmpJoin = makeJoinCode(5);
@@ -26,18 +31,28 @@ exports.create = (req, res) => {
         .then(game => {
             if (game == null) {
                 joinCode = tmpJoin;
-                // Create a Game
-                const game = new Game({
-                    joinCode: joinCode,
-                    deviceIds: [req.body.hostDeviceId]
-                });
+                questionsController.get_questions_for_set(req.body.questionSet, 3)
+                    .then(questions => {
+                        // Create a Game
+                        const game = new Game({
+                            joinCode: joinCode,
+                            deviceIds: [req.body.hostDeviceId],
+                            questionSet: req.body.questionSet,
+                            questions: questions
+                        });
 
-                // Save game in the database
-                game
-                    .save(game)
-                    .then(data => {
-                        // Return new game data and jwt
-                        res.json({game: data, token: jwt.sign({_id: game._id, joinCode: game.joinCode}, 'GYFServer')});
+                        // Save game in the database
+                        game
+                            .save(game)
+                            .then(data => {
+                                // Return new game data and jwt
+                                res.json({game: data, token: jwt.sign({_id: game._id, joinCode: game.joinCode}, 'GYFServer')});
+                            })
+                            .catch(err => {
+                                res.status(500).send({
+                                    message: err.message || "An error occurred while creating the new game"
+                                });
+                            });
                     })
                     .catch(err => {
                         res.status(500).send({
