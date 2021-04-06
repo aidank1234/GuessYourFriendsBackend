@@ -6,7 +6,8 @@ module.exports = mongoose => {
             joinCode: {type: String, unique: true, required: true},
             deviceIds: {type: Array, unique: false, required: true},
             started: {type: Boolean, unique: false, required: false, default: false},
-            readyPlayers: {type: Array, unique: false, required: false, default: []}
+            readyPlayers: {type: Array, unique: false, required: false, default: []},
+            gameStartTime: {type: Date, unique: false, required: false, default: null}
         },
         {timestamps: true}
     );

@@ -112,8 +112,9 @@ exports.start_game = (req, res) => {
         res.status(400).send({message: "Content cannot be empty"});
         return;
     }
-
-    Game.findOneAndUpdate({joinCode: req.body.joinCode}, {started: true, $addToSet: {readyPlayers: req.body.hostDeviceId}})
+    let t = new Date();
+    t.setSeconds(t.getSeconds() + 10);
+    Game.findOneAndUpdate({joinCode: req.body.joinCode}, {started: true, gameStartTime: t, $addToSet: {readyPlayers: req.body.hostDeviceId}})
         .then(data => {
             res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
         })
