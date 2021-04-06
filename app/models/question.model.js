@@ -3,7 +3,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 module.exports = mongoose => {
     const questionSchema = mongoose.Schema(
         {
-            questionSet: {type: String, unique: true, required: true},
+            questionSet: {type: String, unique: false, required: true},
             questionContent: {type: String, unique: true, required: true}
         },
         {timestamps: true}
