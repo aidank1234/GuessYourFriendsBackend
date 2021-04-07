@@ -169,7 +169,7 @@ exports.vote = (req, res) => {
 };
 
 exports.check_ready_next_question = (req, res) => {
-  if(!req.body.joinCode || !req.body.questionNumber) {
+  if(!req.body.joinCode || req.body.questionNumber === undefined) {
       res.status(400).send({message: "Content cannot be empty"});
       return;
   }
