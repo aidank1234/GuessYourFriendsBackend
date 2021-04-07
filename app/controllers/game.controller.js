@@ -1,6 +1,5 @@
 const db = require("../models");
 const Game = db.game;
-const jwt = require('jsonwebtoken');
 const questionsController = require('./question.controller');
 
 function makeJoinCode(length) {
@@ -46,7 +45,7 @@ exports.create = (req, res) => {
                             .save(game)
                             .then(data => {
                                 // Return new game data and jwt
-                                res.json({game: data, token: jwt.sign({_id: game._id, joinCode: game.joinCode}, 'GYFServer')});
+                                res.json({game: data});
                             })
                             .catch(err => {
                                 res.status(500).send({
@@ -78,7 +77,7 @@ exports.joinGame = (req, res) => {
 
     Game.findOneAndUpdate({started: false, joinCode: req.body.joinCode, deviceIds: { "$nin": [req.body.newDeviceId] }}, {$addToSet: {deviceIds: req.body.newDeviceId}})
         .then(data => {
-            res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
+            res.json({game: data});
         })
         .catch(err => {
             console.log(err);
@@ -96,7 +95,7 @@ exports.getGameForJoinCode = (req, res) => {
 
   Game.findOne({joinCode: req.body.joinCode})
       .then(data => {
-          res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
+          res.json({game: data});
       })
       .catch(err => {
           res.status(500).send({
@@ -113,7 +112,7 @@ exports.add_to_ready = (req, res) => {
 
     Game.findOneAndUpdate({joinCode: req.body.joinCode, readyPlayers: { "$nin": [req.body.deviceId] }}, {$addToSet: {readyPlayers: req.body.deviceId}})
         .then(data => {
-            res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
+            res.json({game: data});
         })
         .catch(err => {
             res.status(500).send({
@@ -131,11 +130,80 @@ exports.start_game = (req, res) => {
     t.setSeconds(t.getSeconds() + 10);
     Game.findOneAndUpdate({joinCode: req.body.joinCode}, {started: true, gameStartTime: t, $addToSet: {readyPlayers: req.body.hostDeviceId}})
         .then(data => {
-            res.json({game: data, token: jwt.sign({_id: data._id, joinCode: data.joinCode}, 'GYFServer')});
+            res.json({game: data});
         })
         .catch(err => {
             res.status(500).send({
                 message: err.message || "An error occurred while setting player to ready"
             });
         });
+};
+
+exports.vote = (req, res) => {
+  if(!req.body.deviceId || !req.body.votedFor || !req.body.questionNumber || !req.body.joinCode) {
+      res.status(400).send({message: "Content cannot be empty"});
+      return;
+  }
+
+  Game.findOneAndUpdate({joinCode: req.body.joinCode},
+      {
+          $push: {votesByQuestion: {questionNumber: req.body.questionNumber, voter: req.body.deviceId, votedFor: req.body.votedFor}}
+      })
+      .then(data => {
+          res.json({game: data});
+      })
+      .catch(err => {
+          res.status(500).send({
+              message: err.message || "An error occurred while submitting vote"
+          });
+      });
+};
+
+exports.check_ready_next_question = (req, res) => {
+  if(!req.body.joinCode || !req.body.questionNumber) {
+      res.status(400).send({message: "Content cannot be empty"});
+      return;
+  }
+
+  Game.findOne({joinCode: req.body.joinCode, nextQuestionStartTime: null})
+      .then(data => {
+          if(data) {
+              let counter = 0;
+              for(let i=0; i<data.votesByQuestion.length; i++) {
+                  if(data.votesByQuestion[i].questionNumber === req.body.questionNumber) {
+                      counter = counter + 1;
+                  }
+              }
+              if(counter === data.deviceIds.length) {
+                  let t = new Date();
+                  t.setSeconds(t.getSeconds() + 10);
+                  Game.findOneAndUpdate({joinCode: req.body.joinCode}, {nextQuestionStartTime: t}, {new: true})
+                      .then(newData => {
+                          res.json({game: newData});
+                      })
+                      .catch(err => {
+                          res.status(500).send({
+                              message: err.message || "An error occurred while waiting for all votes"
+                          });
+                      })
+              } else {
+                  res.json({game: data});
+              }
+          } else {
+              Game.findOne({joinCode: req.body.joinCode})
+                  .then(newData => {
+                      res.json({game: newData});
+                  })
+                  .catch(err => {
+                      res.status(500).send({
+                          message: err.message || "An error occurred while waiting for all votes"
+                      });
+                  });
+          }
+      })
+      .catch(err => {
+          res.status(500).send({
+              message: err.message || "An error occurred while waiting for all votes"
+          });
+      });
 };

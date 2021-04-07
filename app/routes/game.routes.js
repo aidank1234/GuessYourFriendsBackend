@@ -18,6 +18,10 @@ module.exports = app => {
     // Set game to started
     router.post("/start", game.start_game);
 
+    router.post("/vote", game.vote);
+
+    router.post("/")
+
 
     app.use('/api/game', router);
 };

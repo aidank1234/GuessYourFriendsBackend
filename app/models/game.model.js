@@ -9,7 +9,9 @@ module.exports = mongoose => {
             readyPlayers: {type: Array, unique: false, required: false, default: []},
             gameStartTime: {type: Date, unique: false, required: false, default: null},
             questionSet: {type: String, unique: false, required: true},
-            questions: {type: Array, unique: false, required: true}
+            questions: {type: Array, unique: false, required: true},
+            votesByQuestion: {type: Array, unique: false, required: false, default: []},
+            nextQuestionStartTime: {type: Date, unique: false, required: false, default: null}
         },
         {timestamps: true}
     );
