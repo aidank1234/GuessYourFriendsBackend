@@ -140,8 +140,17 @@ exports.start_game = (req, res) => {
 };
 
 exports.vote = (req, res) => {
-  if(!req.body.deviceId || !req.body.votedFor || !req.body.questionNumber || !req.body.joinCode) {
-      res.status(400).send({message: "Content cannot be empty"});
+  if(!req.body.deviceId) {
+      res.status(400).send({message: "Device id cannot be empty"});
+      return;
+  } else if(!req.body.votedFor) {
+      res.status(400).send({message: "Voted for cannot be empty"});
+      return;
+  } else if(!req.body.questionNumber) {
+      res.status(400).send({message: "Question number cannot be empty"});
+      return;
+  } else if (!req.body.joinCode) {
+      res.status(400).send({message: "Join code cannot be empty"});
       return;
   }
 
