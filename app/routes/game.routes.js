@@ -20,7 +20,7 @@ module.exports = app => {
 
     router.post("/vote", game.vote);
 
-    router.post("/")
+    router.post("/nextQuestion", game.check_ready_next_question);
 
 
     app.use('/api/game', router);
