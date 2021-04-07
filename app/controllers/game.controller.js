@@ -146,7 +146,7 @@ exports.vote = (req, res) => {
   } else if(!req.body.votedFor) {
       res.status(400).send({message: "Voted for cannot be empty"});
       return;
-  } else if(!req.body.questionNumber) {
+  } else if(req.body.questionNumber === undefined) {
       res.status(400).send({message: "Question number cannot be empty"});
       return;
   } else if (!req.body.joinCode) {
