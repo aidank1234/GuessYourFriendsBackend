@@ -156,7 +156,8 @@ exports.vote = (req, res) => {
 
   Game.findOneAndUpdate({joinCode: req.body.joinCode},
       {
-          $push: {votesByQuestion: {questionNumber: req.body.questionNumber, voter: req.body.deviceId, votedFor: req.body.votedFor}}
+          $push: {votesByQuestion: {questionNumber: req.body.questionNumber, voter: req.body.deviceId, votedFor: req.body.votedFor}},
+          nextQuestionStartTime: null,
       })
       .then(data => {
           res.json({game: data});
