@@ -10,5 +10,7 @@ db.mongoose.set('useFindAndModify', false);
 db.url = dbConfig.url;
 
 db.game = require('./game.model.js')(mongoose);
+db.question = require('./question.model')(mongoose);
+db.questionSet = require('./questionSet.model')(mongoose);
 
 module.exports = db;

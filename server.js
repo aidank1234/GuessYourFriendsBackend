@@ -46,6 +46,8 @@ db.mongoose
     });
 
 require("./app/routes/game.routes")(app);
+require("./app/routes/question.routes")(app);
+require("./app/routes/questionSet.routes")(app);
 
 
 // set port, listen for requests
