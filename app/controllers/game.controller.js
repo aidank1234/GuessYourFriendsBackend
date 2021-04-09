@@ -186,7 +186,7 @@ exports.check_ready_next_question = (req, res) => {
               }
               if(counter === data.deviceIds.length) {
                   let t = new Date();
-                  t.setSeconds(t.getSeconds() + 10);
+                  t.setSeconds(t.getSeconds() + 5);
                   Game.findOneAndUpdate({joinCode: req.body.joinCode}, {nextQuestionStartTime: t}, {new: true})
                       .then(newData => {
                           res.json({game: newData});
