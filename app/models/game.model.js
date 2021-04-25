@@ -11,7 +11,8 @@ module.exports = mongoose => {
             questionSet: {type: String, unique: false, required: true},
             questions: {type: Array, unique: false, required: true},
             votesByQuestion: {type: Array, unique: false, required: false, default: []},
-            nextQuestionStartTime: {type: Date, unique: false, required: false, default: null}
+            nextQuestionStartTime: {type: Date, unique: false, required: false, default: null},
+            showScoreTime: {type: Date, unique: false, required: false, default: null}
         },
         {timestamps: true}
     );

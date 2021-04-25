@@ -187,7 +187,7 @@ exports.check_ready_next_question = (req, res) => {
               if(counter === data.deviceIds.length) {
                   let t = new Date();
                   t.setSeconds(t.getSeconds() + 5);
-                  Game.findOneAndUpdate({joinCode: req.body.joinCode}, {nextQuestionStartTime: t}, {new: true})
+                  Game.findOneAndUpdate({joinCode: req.body.joinCode}, {nextQuestionStartTime: t, gameStartTime: null}, {new: true})
                       .then(newData => {
                           res.json({game: newData});
                       })
@@ -216,4 +216,49 @@ exports.check_ready_next_question = (req, res) => {
               message: err.message || "An error occurred while waiting for all votes"
           });
       });
+};
+
+exports.move_to_scores = (req, res) => {
+    if(!req.body.joinCode) {
+        res.status(400).send({message: "Content cannot be empty"});
+        return;
+    }
+    let t = new Date();
+    t.setSeconds(t.getSeconds() + 5);
+    Game.findOneAndUpdate({joinCode: req.body.joinCode}, {
+        showScoreTime: t
+    }, {
+        new: true
+    })
+        .then(newData => {
+            res.json({game: newData});
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "An error occurred while moving to scores screen"
+            });
+        });
+};
+
+exports.move_to_next_round = (req, res) => {
+    if(!req.body.joinCode) {
+        res.status(400).send({message: "Content cannot be empty"});
+        return;
+    }
+    let t = new Date();
+    t.setSeconds(t.getSeconds() + 5);
+    Game.findOneAndUpdate({joinCode: req.body.joinCode}, {
+        gameStartTime: t
+    }, {
+        new: true
+    })
+        .then(newData => {
+            res.json({game: newData});
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "An error occurred while moving to next round"
+            });
+        });
+
 };

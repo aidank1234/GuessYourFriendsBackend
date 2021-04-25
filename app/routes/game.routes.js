@@ -22,6 +22,10 @@ module.exports = app => {
 
     router.post("/nextQuestion", game.check_ready_next_question);
 
+    router.post("/moveToScores", game.move_to_scores);
+
+    router.post("/moveToNextRound", game.move_to_next_round);
+
 
     app.use('/api/game', router);
 };
