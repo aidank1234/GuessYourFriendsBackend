@@ -225,11 +225,7 @@ exports.move_to_scores = (req, res) => {
     }
     let t = new Date();
     t.setSeconds(t.getSeconds() + 5);
-    Game.findOneAndUpdate({joinCode: req.body.joinCode}, {
-        showScoreTime: t
-    }, {
-        new: true
-    })
+    Game.findOneAndUpdate({joinCode: req.body.joinCode}, {showScoreTime: t}, {new: true})
         .then(newData => {
             res.json({game: newData});
         })
