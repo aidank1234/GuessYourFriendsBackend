@@ -23,6 +23,14 @@ exports.create = (req, res) => {
         res.status(400).send({message: "Content cannot be empty"});
         return;
     }
+    if (req.body.hostDeviceId.length < 3) {
+        res.status(400).send({message: "Nickname must be longer than 3 characters"});
+        return;
+    }
+    if (!req.body.hostDeviceId.replace(/\s/g, '').length) {
+        res.status(400).send({message: "Nickname must not only be whitespace"});
+        return;
+    }
 
     let joinCode = "";
     const tmpJoin = makeJoinCode(5);
