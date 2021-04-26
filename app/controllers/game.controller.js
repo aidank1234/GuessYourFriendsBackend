@@ -244,7 +244,8 @@ exports.move_to_next_round = (req, res) => {
     let t = new Date();
     t.setSeconds(t.getSeconds() + 5);
     Game.findOneAndUpdate({joinCode: req.body.joinCode}, {
-        gameStartTime: t
+        gameStartTime: t,
+        showScoreTime: null
     }, {
         new: true
     })
