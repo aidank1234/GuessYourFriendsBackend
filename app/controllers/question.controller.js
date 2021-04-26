@@ -44,7 +44,7 @@ exports.get_questions_for_set = async (questionSet, numRounds) => {
                 const numQuestions = numRounds * 5;
                 for(let i = 0; i < numQuestions; i++) {
                     let rand = Math.floor(Math.random() * questionsCopy.length);
-                    let item = questionsCopy[Math.floor(Math.random() * questionsCopy.length)];
+                    let item = questionsCopy[rand];
                     questionsToReturn.push(item);
                     questionsCopy.splice(rand, 1);
                 }
