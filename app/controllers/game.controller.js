@@ -74,6 +74,14 @@ exports.joinGame = (req, res) => {
         res.status(400).send({message: "Content cannot be empty"});
         return;
     }
+    if (req.body.newDeviceId.length < 3) {
+        res.status(400).send({message: "Nickname must be longer than 3 characters"});
+        return;
+    }
+    if (!req.body.newDeviceId.replace(/\s/g, '').length) {
+        res.status(400).send({message: "Nickname must not only be whitespace"});
+        return;
+    }
 
     Game.findOneAndUpdate({started: false, joinCode: req.body.joinCode, deviceIds: { "$nin": [req.body.newDeviceId] }}, {$addToSet: {deviceIds: req.body.newDeviceId}})
         .then(data => {
